@@ -1,0 +1,145 @@
+.game-board-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.game-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.game-board-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.control-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.board-area {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  height: 400px;
+  margin-bottom: 1rem;
+  cursor: crosshair;
+  overflow: hidden;
+}
+
+.daisy {
+  position: absolute;
+  cursor: pointer;
+  color: #ffd700;
+  transition: all 0.3s ease;
+  animation: float 3s ease-in-out infinite;
+  z-index: 10;
+}
+
+.daisy:hover {
+  transform: scale(1.2);
+  color: #ffed4e;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 2px solid #ff6b6b;
+}
+
+.game-over h2 {
+  color: #ff6b6b;
+  margin: 0 0 1rem 0;
+  font-size: 2rem;
+}
+
+.game-over p {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ffd700;
+}
+
+.instructions {
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  line-height: 1.5;
+}
+
+.instructions p {
+  margin: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .board-area {
+    height: 300px;
+  }
+  
+  .game-board-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .controls {
+    justify-content: center;
+  }
+}
+
+
+

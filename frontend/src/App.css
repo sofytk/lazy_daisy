@@ -1,0 +1,134 @@
+.App {
+  min-height: 100vh;
+  background: var(--tg-theme-bg-color, linear-gradient(135deg, #87CEEB 0%, #98FB98 100%));
+  color: var(--tg-theme-text-color, #000000);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Loading Screen */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+  color: white;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-screen p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Error Screen */
+.error-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-screen h2 {
+  margin: 0 0 1rem 0;
+  font-size: 2rem;
+  color: #ff6b6b;
+}
+
+.error-screen p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Telegram WebApp specific styles */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #000000);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide scrollbars for Telegram WebApp */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Button styles */
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Input styles */
+input {
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+input:focus {
+  outline: none;
+}
+
+/* Link styles */
+a {
+  color: var(--tg-theme-link-color, #2481cc);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .App {
+    font-size: 14px;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .App {
+    background: var(--tg-theme-bg-color, #1a1a1a);
+    color: var(--tg-theme-text-color, #ffffff);
+  }
+}
