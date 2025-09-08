@@ -24,7 +24,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/ssl/sonchasapps.crt:/etc/ssl/sonchasapps.crt:ro
-      - /etc/ssl/sonchasapps.key:/etc/ssl/sonchasapps.key:ro
+      - /etc/ssl/certificate.key:/etc/ssl/certificate.key:ro
+      - ./frontend/dist:/usr/share/nginx/html:ro
     depends_on:
       - backend
       - frontend
