@@ -1,5 +1,4 @@
-
-        .main-screen {
+.main-screen {
             min-height: 100vh;
             background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
             display: flex;
@@ -109,8 +108,8 @@
 
         /* Контейнер для ромашки */
         .daisy {
-            width: clamp(48px, 12vw, 70px);
-            height: clamp(48px, 12vw, 70px);
+            width: clamp(160px, 40vw, 240px);
+            height: clamp(160px, 40vw, 240px);
             position: relative;
             margin: 0 auto;
         }
@@ -131,24 +130,24 @@
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             top: 50%;
             left: 50%;
-            transform-origin: center bottom;
+            transform-origin: center center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        /* Расположение лепестков по кругу */
-        .petal:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg) translateY(-40px) rotate(0deg); }
-        .petal:nth-child(2) { transform: translate(-50%, -50%) rotate(30deg) translateY(-40px) rotate(-30deg); }
-        .petal:nth-child(3) { transform: translate(-50%, -50%) rotate(60deg) translateY(-40px) rotate(-60deg); }
-        .petal:nth-child(4) { transform: translate(-50%, -50%) rotate(90deg) translateY(-40px) rotate(-90deg); }
-        .petal:nth-child(5) { transform: translate(-50%, -50%) rotate(120deg) translateY(-40px) rotate(-120deg); }
-        .petal:nth-child(6) { transform: translate(-50%, -50%) rotate(150deg) translateY(-40px) rotate(-150deg); }
-        .petal:nth-child(7) { transform: translate(-50%, -50%) rotate(180deg) translateY(-40px) rotate(-180deg); }
-        .petal:nth-child(8) { transform: translate(-50%, -50%) rotate(210deg) translateY(-40px) rotate(-210deg); }
-        .petal:nth-child(9) { transform: translate(-50%, -50%) rotate(240deg) translateY(-40px) rotate(-240deg); }
-        .petal:nth-child(10) { transform: translate(-50%, -50%) rotate(270deg) translateY(-40px) rotate(-270deg); }
-        .petal:nth-child(11) { transform: translate(-50%, -50%) rotate(300deg) translateY(-40px) rotate(-300deg); }
-        .petal:nth-child(12) { transform: translate(-50%, -50%) rotate(330deg) translateY(-40px) rotate(-330deg); }
+        /* Расположение лепестков по кругу - убрано расстояние translateY(-40px) */
+        .petal:nth-child(1) { transform: translate(-50%, -50%) rotate(0deg); }
+        .petal:nth-child(2) { transform: translate(-50%, -50%) rotate(30deg); }
+        .petal:nth-child(3) { transform: translate(-50%, -50%) rotate(60deg); }
+        .petal:nth-child(4) { transform: translate(-50%, -50%) rotate(90deg); }
+        .petal:nth-child(5) { transform: translate(-50%, -50%) rotate(120deg); }
+        .petal:nth-child(6) { transform: translate(-50%, -50%) rotate(150deg); }
+        .petal:nth-child(7) { transform: translate(-50%, -50%) rotate(180deg); }
+        .petal:nth-child(8) { transform: translate(-50%, -50%) rotate(210deg); }
+        .petal:nth-child(9) { transform: translate(-50%, -50%) rotate(240deg); }
+        .petal:nth-child(10) { transform: translate(-50%, -50%) rotate(270deg); }
+        .petal:nth-child(11) { transform: translate(-50%, -50%) rotate(300deg); }
+        .petal:nth-child(12) { transform: translate(-50%, -50%) rotate(330deg); }
 
         .petal:hover {
             transform: translate(-50%, -50%) scale(1.06);
@@ -213,17 +212,6 @@
         @keyframes resultFadeIn {
             from { opacity: 0; transform: translate(-50%, -55%); }
             to { opacity: 1; transform: translate(-50%, -50%); }
-        }
-
-        .petal-label {
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%) rotate(-90deg);
-            font-size: clamp(10px, 2.5vw, 12px);
-            color: #333;
-            opacity: 0.9;
-            white-space: nowrap;
         }
 
         .floating-buttons {
@@ -341,4 +329,3 @@
                 font-size: 0.9rem;
             }
         }
- 
