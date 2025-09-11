@@ -28,8 +28,12 @@ class TelegramAuth:
                 filtered_pairs.sort(key=lambda kv: kv[0])
                 data_check_string = "\n".join([f"{k}={v}" for k, v in filtered_pairs])
 
-                # SHA256 от bot_token
-                secret_key = hashlib.sha256(self.bot_token.encode()).digest()
+                # Secret key per Telegram spec: HMAC_SHA256("WebAppData", bot_token)
+                secret_key = hmac.new(
+                    key=b"WebAppData",
+                    msg=self.bot_token.encode(),
+                    digestmod=hashlib.sha256,
+                ).digest()
 
                 calculated_hash = hmac.new(
                     key=secret_key,
