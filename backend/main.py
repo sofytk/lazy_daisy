@@ -9,7 +9,7 @@ import json
 from dotenv import load_dotenv
 
 # Import our modules
-from database import get_db, create_tables, init_default_skins, User, Skin, UserSkin, Referral, Purchase, Result
+from database import get_db, create_tables, migrate_schema, init_default_skins, User, Skin, UserSkin, Referral, Purchase, Result
 from telegram_auth import TelegramAuth
 from payment_service import TelegramPaymentService
 
@@ -116,6 +116,7 @@ def get_current_user(init_data: str, db: Session = Depends(get_db)) -> User:
 @app.on_event("startup")
 async def startup_event():
     create_tables()
+    migrate_schema()
     init_default_skins()
 
 @app.get("/")

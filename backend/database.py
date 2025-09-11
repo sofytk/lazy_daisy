@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey, BigInteger
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, ForeignKey, BigInteger, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -102,6 +102,18 @@ class Result(Base):
 # Create tables
 def create_tables():
     Base.metadata.create_all(bind=engine)
+
+def migrate_schema():
+    """Add missing columns to existing SQLite DB without full migrations."""
+    if "sqlite" not in DATABASE_URL:
+        return
+    with engine.begin() as conn:
+        # Inspect users table
+        cols = [row[1] for row in conn.execute(text("PRAGMA table_info(users);"))]
+        if 'daisies_left' not in cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN daisies_left INTEGER DEFAULT 2"))
+        if 'texts_preset_key' not in cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN texts_preset_key TEXT"))
 
 # Get database session
 def get_db():
