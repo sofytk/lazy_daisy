@@ -7,11 +7,10 @@ from datetime import datetime, timezone
 
 class TelegramAuth:
     def __init__(self, bot_token: str):
-        self.bot_token = bot_token
+        self.bot_token = bot_token 
     
     def verify_init_data(self, init_data: str) -> Optional[Dict[str, Any]]:
             try:
-            # Разбираем пары
                 pairs: List[Tuple[str, str]] = urllib.parse.parse_qsl(init_data, keep_blank_values=True)
                 received_hash: Optional[str] = None
                 filtered_pairs: List[Tuple[str, str]] = []
