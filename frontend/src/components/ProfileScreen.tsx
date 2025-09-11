@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { User, Referral } from '../types/game'
 import { ArrowLeft, Users, History, ShoppingBag, Globe, Palette, HelpCircle } from 'lucide-react'
-import { gameAPI } from '../services/api'
+import { gameAPI, historyAPI } from '../services/api'
 import './ProfileScreen.css'
 
 interface ProfileScreenProps {
   user: User
-  onScreenChange: (screen: 'main' | 'shop' | 'profile') => void
+  onScreenChange: (screen: 'main' | 'shop' | 'profile' | 'history') => void
 }
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onScreenChange }) => {
   const [referrals, setReferrals] = useState<Referral[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [purchases, setPurchases] = useState<any[]>([])
+  const [results, setResults] = useState<any[]>([])
 
   useEffect(() => {
     loadReferrals()
+    loadHistory()
   }, [])
 
   const loadReferrals = async () => {
@@ -29,13 +32,26 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onScreenChange }) =
     }
   }
 
+  const loadHistory = async () => {
+    try {
+      const [p, r] = await Promise.all([
+        historyAPI.getPurchases(),
+        historyAPI.getResults()
+      ])
+      setPurchases(p.purchases)
+      setResults(r.results)
+    } catch (e) {
+      console.error('Failed to load history', e)
+    }
+  }
+
   const handleMenuClick = (menuItem: string) => {
     switch (menuItem) {
       case 'friends':
         // Показать друзей/рефералов
         break
       case 'history':
-        // Показать историю
+        alert('История доступна ниже. Для полной версии сделаем отдельный экран при необходимости.')
         break
       case 'purchases':
         // Показать покупки
@@ -126,7 +142,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onScreenChange }) =
             <Users size={20} />
             <span>Друзья ({referrals.length})</span>
           </div>
-          <div className="menu-item" onClick={() => handleMenuClick('history')}>
+          <div className="menu-item" onClick={() => onScreenChange('history')}>
             <History size={20} />
             <span>История</span>
           </div>
@@ -147,6 +163,25 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ user, onScreenChange }) =
             <span>Помощь</span>
           </div>
         </div>
+      </div>
+
+      {/* History Preview */}
+      <div className="history-section">
+        <h4>Покупки</h4>
+        {purchases.slice(0,5).map((p) => (
+          <div key={p.id} className="history-row">
+            <span>{p.item_type}</span>
+            <span>{p.amount}</span>
+            <span>{new Date(p.created_at).toLocaleString()}</span>
+          </div>
+        ))}
+        <h4>Результаты</h4>
+        {results.slice(0,5).map((r) => (
+          <div key={r.id} className="history-row">
+            <span>{r.text}</span>
+            <span>{new Date(r.created_at).toLocaleString()}</span>
+          </div>
+        ))}
       </div>
 
       {/* Bottom Navigation */}

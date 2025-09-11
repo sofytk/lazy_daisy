@@ -9,7 +9,7 @@ import json
 from dotenv import load_dotenv
 
 # Import our modules
-from database import get_db, create_tables, init_default_skins, User, Skin, UserSkin, Referral, Purchase
+from database import get_db, create_tables, init_default_skins, User, Skin, UserSkin, Referral, Purchase, Result
 from telegram_auth import TelegramAuth
 from payment_service import TelegramPaymentService
 
@@ -52,6 +52,9 @@ class UserResponse(BaseModel):
     referrals_count: int
     current_skin_id: int
     custom_texts: Optional[List[str]] = None
+    daisies_left: Optional[int] = None
+    current_skin_color: Optional[str] = None
+    texts_preset_key: Optional[str] = None
 
 class SkinResponse(BaseModel):
     id: int
@@ -144,6 +147,13 @@ async def auth_user(auth_request: AuthRequest, db: Session = Depends(get_db)):
     else:
         custom_texts = ["любит", "не любит"]
     
+    # Определяем цвет текущего скина
+    current_skin_color = None
+    if user.current_skin_id:
+        skin_obj = db.query(Skin).filter(Skin.id == user.current_skin_id).first()
+        if skin_obj and skin_obj.color:
+            current_skin_color = skin_obj.color
+
     return UserResponse(
         id=user.id,
         tg_id=user.tg_id,
@@ -153,7 +163,10 @@ async def auth_user(auth_request: AuthRequest, db: Session = Depends(get_db)):
         balance=user.balance,
         referrals_count=user.referrals_count,
         current_skin_id=user.current_skin_id,
-        custom_texts=custom_texts
+        custom_texts=custom_texts,
+        daisies_left=user.daisies_left,
+        current_skin_color=current_skin_color,
+        texts_preset_key=user.texts_preset_key
     )
 
 # User endpoints
@@ -164,6 +177,13 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
+    # Определяем цвет текущего скина
+    current_skin_color = None
+    if user.current_skin_id:
+        skin_obj = db.query(Skin).filter(Skin.id == user.current_skin_id).first()
+        if skin_obj and skin_obj.color:
+            current_skin_color = skin_obj.color
+
     return UserResponse(
         id=user.id,
         tg_id=user.tg_id,
@@ -172,8 +192,82 @@ async def get_user(user_id: int, db: Session = Depends(get_db)):
         last_name=user.last_name,
         balance=user.balance,
         referrals_count=user.referrals_count,
-        current_skin_id=user.current_skin_id
+        current_skin_id=user.current_skin_id,
+        daisies_left=user.daisies_left,
+        current_skin_color=current_skin_color,
+        texts_preset_key=user.texts_preset_key
     )
+
+class PresetUpdate(BaseModel):
+    key: Optional[str] = None
+    texts: Optional[List[str]] = None
+
+@app.post("/api/preset")
+async def set_preset(update: PresetUpdate, init_data: str, db: Session = Depends(get_db)):
+    user = get_current_user(init_data, db)
+    if update.key:
+        user.texts_preset_key = update.key
+    if update.texts is not None:
+        user.custom_texts = json.dumps(update.texts)
+    db.commit()
+    return {"texts_preset_key": user.texts_preset_key}
+
+@app.get("/api/purchases")
+async def list_purchases(init_data: str, offset: int = 0, limit: int = 20, db: Session = Depends(get_db)):
+    user = get_current_user(init_data, db)
+    limit = max(1, min(limit, 100))
+    purchases = (
+        db.query(Purchase)
+        .filter(Purchase.user_id == user.id)
+        .order_by(Purchase.created_at.desc())
+        .offset(max(0, offset))
+        .limit(limit)
+        .all()
+    )
+    return {
+        "purchases": [
+            {
+                "id": p.id,
+                "item_type": p.item_type,
+                "item_id": p.item_id,
+                "amount": p.amount,
+                "created_at": p.created_at.isoformat(),
+            } for p in purchases
+        ]
+    }
+
+@app.get("/api/results")
+async def list_results(init_data: str, offset: int = 0, limit: int = 20, db: Session = Depends(get_db)):
+    user = get_current_user(init_data, db)
+    limit = max(1, min(limit, 100))
+    results = (
+        db.query(Result)
+        .filter(Result.user_id == user.id)
+        .order_by(Result.created_at.desc())
+        .offset(max(0, offset))
+        .limit(limit)
+        .all()
+    )
+    return {
+        "results": [
+            {"id": r.id, "text": r.result_text, "created_at": r.created_at.isoformat()} for r in results
+        ]
+    }
+
+class DaisiesUpdate(BaseModel):
+    value: int
+
+@app.get("/api/daisies")
+async def get_daisies_left(init_data: str, db: Session = Depends(get_db)):
+    user = get_current_user(init_data, db)
+    return {"daisies_left": user.daisies_left}
+
+@app.post("/api/daisies")
+async def set_daisies_left(update: DaisiesUpdate, init_data: str, db: Session = Depends(get_db)):
+    user = get_current_user(init_data, db)
+    user.daisies_left = max(0, int(update.value))
+    db.commit()
+    return {"daisies_left": user.daisies_left}
 
 # Balance endpoints
 @app.get("/api/balance")
@@ -464,6 +558,18 @@ async def update_custom_texts(request: CustomTextRequest, init_data: str, db: Se
     db.commit()
     
     return {"message": "Custom texts updated successfully", "texts": request.texts}
+
+class SaveResultRequest(BaseModel):
+    text: str
+
+@app.post("/api/results")
+async def save_result(request: SaveResultRequest, init_data: str, db: Session = Depends(get_db)):
+    user = get_current_user(init_data, db)
+    result = Result(user_id=user.id, result_text=request.text)
+    db.add(result)
+    db.commit()
+    db.refresh(result)
+    return {"id": result.id, "result_text": result.result_text, "created_at": result.created_at.isoformat()}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

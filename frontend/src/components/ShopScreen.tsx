@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { User, Skin } from '../types/game'
+import { gameAPI, historyAPI } from '../services/api'
 import { Leaf, ArrowLeft, Edit3 } from 'lucide-react'
 import TextCustomization from './TextCustomization'
 import './ShopScreen.css'
@@ -23,6 +24,12 @@ const ShopScreen: React.FC<ShopScreenProps> = ({
 }) => {
   const [selectedSkin, setSelectedSkin] = useState<number | null>(null)
   const [showTextCustomization, setShowTextCustomization] = useState(false)
+  const presets: string[][] = [
+    ['любит', 'не любит'],
+    ['купить', 'не покупать'],
+    ['позвонит', 'не позвонит']
+  ]
+  const [activePresetIdx, setActivePresetIdx] = useState<number>(0)
 
   const handleSkinClick = (skin: Skin) => {
     if (skin.owned) {
@@ -76,6 +83,31 @@ const ShopScreen: React.FC<ShopScreenProps> = ({
       {/* Main Content */}
       <div className="main-content">
         <h2>Магазин ромашек</h2>
+
+        {/* Presets */}
+        <div className="presets-grid">
+          {presets.map((preset, idx) => (
+            <div 
+              key={idx}
+              className={`preset-card ${activePresetIdx === idx ? 'selected' : ''}`}
+              onClick={async () => {
+                setActivePresetIdx(idx)
+                try {
+                  await gameAPI.updateCustomTexts(preset)
+                  await historyAPI.setPreset(`preset_${idx}`, preset)
+                } catch {}
+                onTextsUpdate(preset)
+              }}
+            >
+              <div className="preset-lines">
+                {preset.map((line, i) => (
+                  <div key={i} className="preset-line">{line}</div>
+                ))}
+              </div>
+              <div className="preset-footer">{activePresetIdx === idx ? 'Выбрано' : 'Выбрать'}</div>
+            </div>
+          ))}
+        </div>
         
         <div className="skins-grid">
           {skins.map((skin) => (

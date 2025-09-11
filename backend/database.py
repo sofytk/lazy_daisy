@@ -26,6 +26,8 @@ class User(Base):
     referrals_count = Column(Integer, default=0)
     current_skin_id = Column(Integer, default=1)  # ID текущего скина
     custom_texts = Column(String, nullable=True)  # JSON с кастомными текстами
+    daisies_left = Column(Integer, default=2)  # Остаток ромашек
+    texts_preset_key = Column(String, nullable=True)  # Ключ выбранного пресета
     created_at = Column(DateTime, default=datetime.utcnow)
     
     # Relationships
@@ -86,6 +88,16 @@ class Purchase(Base):
     
     # Relationships
     user = relationship("User", back_populates="purchases")
+
+class Result(Base):
+    __tablename__ = "results"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    result_text = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    user = relationship("User")
 
 # Create tables
 def create_tables():

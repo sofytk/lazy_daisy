@@ -6,8 +6,9 @@ import { initTelegram, showTelegramAlert } from './telegram'
 import MainScreen from './components/MainScreen'
 import ShopScreen from './components/ShopScreen'
 import ProfileScreen from './components/ProfileScreen'
+import HistoryScreen from './components/HistoryScreen'
 
-type Screen = 'main' | 'shop' | 'profile'
+type Screen = 'main' | 'shop' | 'profile' | 'history'
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('main')
@@ -149,6 +150,10 @@ function App() {
           user={user}
           onScreenChange={handleScreenChange}
         />
+      )}
+
+      {currentScreen === 'history' && (
+        <HistoryScreen onBack={() => handleScreenChange('profile')} />
       )}
     </div>
   )

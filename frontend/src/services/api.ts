@@ -133,3 +133,42 @@ export const gameAPI = {
     return response.data.leaderboard
   }
 }
+
+export const daisiesAPI = {
+  async getDaisiesLeft(): Promise<{ daisies_left: number }> {
+    const response = await api.get('/daisies', {
+      params: { initData: getInitData() }
+    })
+    return response.data
+  },
+  async setDaisiesLeft(value: number): Promise<{ daisies_left: number }> {
+    const response = await api.post('/daisies', { value }, {
+      params: { initData: getInitData() }
+    })
+    return response.data
+  }
+}
+
+export const resultsAPI = {
+  async saveResult(text: string): Promise<{ id: number; result_text: string; created_at: string }> {
+    const response = await api.post('/results', { text }, {
+      params: { initData: getInitData() }
+    })
+    return response.data
+  }
+}
+
+export const historyAPI = {
+  async getPurchases(offset = 0, limit = 20): Promise<{ purchases: any[] }> {
+    const response = await api.get('/purchases', { params: { initData: getInitData(), offset, limit } })
+    return response.data
+  },
+  async getResults(offset = 0, limit = 20): Promise<{ results: any[] }> {
+    const response = await api.get('/results', { params: { initData: getInitData(), offset, limit } })
+    return response.data
+  },
+  async setPreset(key?: string, texts?: string[]): Promise<{ texts_preset_key: string | null }> {
+    const response = await api.post('/preset', { key, texts }, { params: { initData: getInitData() } })
+    return response.data
+  }
+}
