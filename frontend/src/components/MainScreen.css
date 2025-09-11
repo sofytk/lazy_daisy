@@ -97,6 +97,7 @@
   border-radius: 999px;
   top: 50%;
   left: 50%;
+  rotate: 90deg;
   transform-origin: 50% 100%;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
