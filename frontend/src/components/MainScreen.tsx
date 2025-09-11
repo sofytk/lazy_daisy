@@ -20,10 +20,9 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
   const [gameOver, setGameOver] = useState(false)
 
   const handleDaisyClick = () => {
-    if (isCollecting) return
+    if (isCollecting || gameOver) return
     
     setIsCollecting(true)
-    setDaisiesLeft(prev => Math.max(0, prev - 1))
     
     // Вибрация
     if (tg?.HapticFeedback) {
@@ -56,20 +55,19 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
     // Анимация сбора ромашки
     setTimeout(async () => {
       setIsCollecting(false)
-      // persist daisies left
-      try {
-        await daisiesAPI.setDaisiesLeft(Math.max(0, daisiesLeft - 1))
-      } catch {}
       // если лепестки закончились — game over
       if (petalCount - 1 <= 0) {
         setGameOver(true)
+        const newLeft = Math.max(0, daisiesLeft - 1)
+        setDaisiesLeft(newLeft)
+        try { await daisiesAPI.setDaisiesLeft(newLeft) } catch {}
         try { await resultsAPI.saveResult(randomText) } catch {}
       }
     }, 1000)
   }
 
   useEffect(() => {
-    // load daisies left from backend
+    // load daisies left and initialize fresh flower
     (async () => {
       try {
         const data = await daisiesAPI.getDaisiesLeft()
@@ -77,6 +75,10 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
           setDaisiesLeft(data.daisies_left)
         }
       } catch {}
+      const count = Math.floor(Math.random() * 10) + 6
+      setPetalCount(count)
+      setGameOver(false)
+      setLastResult('')
     })()
   }, [])
 
@@ -173,7 +175,11 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
           onClick={handleDaisyClick}
         >
           <div className="daisy">
-            <div className="daisy-center" style={{ background: (user as any).current_skin_color || '#FFD700' }}></div>
+            <div className={`daisy-center ${gameOver ? 'enlarged' : ''}`} style={{ background: (user as any).current_skin_color || '#FFD700' }}>
+              {gameOver && (
+                <div className="result-text">{lastResult}</div>
+              )}
+            </div>
             <div className="daisy-petals">
               {[...Array(petalCount)].map((_, i) => (
                 <div key={i} className={`petal petal-${i + 1}`}></div>
@@ -203,13 +209,27 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
           </div>
           
           <div className="action-buttons">
-            <button className="share-btn" onClick={handleShare}>
-              Поделиться
-            </button>
-            <button className="buy-btn" onClick={handleBuyDaisies}>
-              <Leaf size={16} />
-              Купить за 50
-            </button>
+            {gameOver && daisiesLeft > 0 && (
+              <button className="share-btn" onClick={handleShare}>
+                Поделиться
+              </button>
+            )}
+            {gameOver && daisiesLeft > 0 && (
+              <button className="share-btn" onClick={() => {
+                const count = Math.floor(Math.random() * 10) + 6
+                setPetalCount(count)
+                setGameOver(false)
+                setLastResult('')
+              }}>
+                Заново
+              </button>
+            )}
+            {gameOver && daisiesLeft === 0 && (
+              <button className="buy-btn" onClick={handleBuyDaisies}>
+                <Leaf size={16} />
+                Купить за 50
+              </button>
+            )}
           </div>
         </div>
       </div>
