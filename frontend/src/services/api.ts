@@ -146,6 +146,12 @@ export const daisiesAPI = {
       params: { initData: getInitData() }
     })
     return response.data
+  },
+  async buyOne(): Promise<{ daisies_left: number; balance: number }> {
+    const response = await api.post('/daisies/buy', null, {
+      params: { initData: getInitData() }
+    })
+    return response.data
   }
 }
 

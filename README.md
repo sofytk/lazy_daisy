@@ -266,3 +266,6 @@ ssh root@109.172.47.161
 cd lazy_daisy
 git init
 git pull origin main
+git add .
+git commit -m debug
+git push origin main

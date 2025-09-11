@@ -86,8 +86,14 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
     onScreenChange('shop')
   }
 
-  const handleBuyDaisies = () => {
-    onPayment(50)
+  const handleBuyDaisies = async () => {
+    try {
+      const data = await daisiesAPI.buyOne()
+      setDaisiesLeft(data.daisies_left)
+    } catch (e: any) {
+      // если не хватает баланса — открываем платеж
+      onPayment(50)
+    }
   }
 
   const handleShare = () => {
@@ -132,12 +138,7 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
 
     const dataUrl = canvas.toDataURL('image/png')
 
-    // Сохраняем результат на бэкенде
-    fetch('/api/results', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: resultText })
-    }).catch(() => {})
+    // Сохранение результата происходит при завершении раунда (уже есть)
     // Telegram WebApp share (как ссылка) или системный шаринг с изображением, если поддерживается
     if (navigator.share && (navigator as any).canShare?.({ files: [] })) {
       fetch(dataUrl)

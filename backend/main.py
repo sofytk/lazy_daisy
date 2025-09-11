@@ -270,6 +270,20 @@ async def set_daisies_left(update: DaisiesUpdate, init_data: str, db: Session = 
     db.commit()
     return {"daisies_left": user.daisies_left}
 
+@app.post("/api/daisies/buy")
+async def buy_daisy(init_data: str, db: Session = Depends(get_db)):
+    """Покупка 1 ромашки за 50 листиков."""
+    user = get_current_user(init_data, db)
+    cost = 50
+    if user.balance < cost:
+        raise HTTPException(status_code=400, detail="Insufficient balance")
+    user.balance -= cost
+    user.daisies_left = (user.daisies_left or 0) + 1
+    purchase = Purchase(user_id=user.id, item_type="daisy", amount=cost)
+    db.add(purchase)
+    db.commit()
+    return {"daisies_left": user.daisies_left, "balance": user.balance}
+
 # Balance endpoints
 @app.get("/api/balance")
 async def get_balance(init_data: str, db: Session = Depends(get_db)):
