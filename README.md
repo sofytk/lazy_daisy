@@ -261,3 +261,8 @@ daisy_game/
 Коротко о конфигурации:
 Backend: python:3.12-slim, команда устанавливает зависимости и запускает uvicorn с --reload, монтируются ./backend и файл daisy_game.db, переменные из ./backend/.env, healthcheck по GET /health.
 Frontend: node:18-alpine, npm ci и npm run dev -- --host 0.0.0.0, прокси /api идёт на http://backend:8000 внутри сети docker, проброшен порт 3000, node_modules в volume для скорости.
+
+ssh root@109.172.47.161
+cd lazy_daisy
+git init
+git pull origin main

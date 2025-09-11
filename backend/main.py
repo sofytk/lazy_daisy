@@ -123,6 +123,11 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
+# Duplicate health endpoint under /api for Nginx proxy prefix
+@app.get("/api/health")
+async def api_health_check():
+    return {"status": "healthy"}
+
 # Auth endpoints
 @app.post("/api/auth", response_model=UserResponse)
 async def auth_user(auth_request: AuthRequest, db: Session = Depends(get_db)):
