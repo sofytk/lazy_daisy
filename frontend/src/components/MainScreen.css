@@ -209,12 +209,12 @@
 
 .floating-buttons {
   position: absolute;
-  bottom: 120px;
+  bottom: 80px;
   left: 0;
   right: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: center;
   padding: 0 2rem;
   pointer-events: none;
 }
@@ -234,6 +234,7 @@
   flex-direction: column;
   gap: 0.5rem;
   pointer-events: auto;
+  margin-left: 1rem;
 }
 
 .share-btn, .buy-btn {
@@ -309,7 +310,7 @@
   }
   
   .floating-buttons {
-    bottom: 100px;
+    bottom: 70px;
     padding: 0 1rem;
   }
   

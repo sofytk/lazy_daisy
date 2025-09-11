@@ -181,9 +181,18 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
               )}
             </div>
             <div className="daisy-petals">
-              {[...Array(petalCount)].map((_, i) => (
-                <div key={i} className={`petal petal-${i + 1}`}></div>
-              ))}
+              {Array.from({ length: petalCount }).map((_, i) => {
+                const angle = (360 / Math.max(1, petalCount)) * i
+                // Радиус выноса лепестка от центра. Подобран под размеры в CSS
+                const radius = 85
+                return (
+                  <div
+                    key={i}
+                    className="petal"
+                    style={{ transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radius}px)` }}
+                  />
+                )
+              })}
             </div>
           </div>
           
