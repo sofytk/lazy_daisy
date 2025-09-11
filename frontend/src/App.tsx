@@ -34,7 +34,7 @@ function App() {
       
     } catch (error) {
       console.error('Failed to initialize app:', error)
-      showTelegramAlert('Ошибка загрузки приложения. Попробуйте позже.')
+      //showTelegramAlert('Ошибка загрузки приложения. Попробуйте позже.')
     } finally {
       setIsLoading(false)
     }

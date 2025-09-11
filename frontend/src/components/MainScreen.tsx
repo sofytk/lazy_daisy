@@ -41,6 +41,7 @@ const MainScreen: React.FC<MainScreenProps> = ({ user, onScreenChange, onPayment
       x: Math.random() * 200 + 50, // Случайная позиция вокруг ромашки
       y: Math.random() * 200 + 50
     }
+    
     setFloatingTexts(prev => [...prev, newFloatingText])
     
     // Убираем текст через 2 секунды

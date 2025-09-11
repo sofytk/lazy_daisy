@@ -79,10 +79,10 @@
 
 .petal {
   position: absolute;
-  width: 80px;
-  height: 40px;
+  width: clamp(50px, 12vw, 80px);
+  height: clamp(28px, 6vw, 40px);
   background: #FFFFFF;
-  border-radius: 50px 50px 0 0;
+  border-radius: 50% / 60% 60% 40% 40%;
   top: 50%;
   left: 50%;
   transform-origin: 50% 100%;
@@ -96,7 +96,7 @@
 
 /* Анимация отрывания лепестка */
 .petal.falling {
-  animation: fallPetal 1s ease-out forwards;
+  animation: fallPetal 0.9s ease-out forwards;
 }
 
 @keyframes fallPetal {
@@ -105,7 +105,7 @@
     opacity: 1;
   }
   100% {
-    transform: translate(-50%, -50%) rotate(180deg) translateY(100px);
+    transform: translate(-50%, -50%) rotate(180deg) translateY(140px);
     opacity: 0;
   }
 }
@@ -138,15 +138,15 @@
 }
 
 .daisy {
-  width: 200px;
-  height: 200px;
+  width: clamp(160px, 40vw, 240px);
+  height: clamp(160px, 40vw, 240px);
   position: relative;
   margin: 0 auto;
 }
 
 .daisy-center {
-  width: 60px;
-  height: 60px;
+  width: clamp(48px, 12vw, 70px);
+  height: clamp(48px, 12vw, 70px);
   background: #FFD700;
   border-radius: 50%;
   position: absolute;
@@ -157,21 +157,26 @@
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
 }
 
+.daisy-center.enlarged {
+  transform: translate(-50%, -50%) scale(1.6);
+}
+
 .daisy-petals {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-
-.petal-1 { transform: translate(-50%, -50%) rotate(0deg); }
-.petal-2 { transform: translate(-50%, -50%) rotate(45deg); }
-.petal-3 { transform: translate(-50%, -50%) rotate(90deg); }
-.petal-4 { transform: translate(-50%, -50%) rotate(135deg); }
-.petal-5 { transform: translate(-50%, -50%) rotate(180deg); }
-.petal-6 { transform: translate(-50%, -50%) rotate(225deg); }
-.petal-7 { transform: translate(-50%, -50%) rotate(270deg); }
-.petal-8 { transform: translate(-50%, -50%) rotate(315deg); }
+.petal-label {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-90deg);
+  font-size: clamp(10px, 2.5vw, 12px);
+  color: #333;
+  opacity: 0.9;
+  white-space: nowrap;
+}
 
 .floating-buttons {
   position: absolute;
@@ -235,7 +240,7 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: #4CAF50;
+  background: #2e7d32;
   padding: 1rem 0;
   box-shadow: 0 -4px 20px rgba(76, 175, 80, 0.3);
 }
@@ -261,10 +266,7 @@
   transform: scale(1.1);
 }
 
-.nav-btn.active {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
-}
+/* Убираем активные подсветки: иконки всегда белые и минималистичные */
 
 @media (max-width: 768px) {
   .daisy {
